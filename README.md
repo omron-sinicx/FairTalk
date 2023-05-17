@@ -19,6 +19,7 @@ You can download TalkNet from the above link, and put it into ./TalkNet-ASD, the
 % pip install -r requirement.txt
 ````
 Then run ./scripts/apply_asd.sh
+
 Something to note
 ````
 ## Note that ./TalkNet-ASD/requirement.txt does not include pandas which is needed. You may manually install pandas.
