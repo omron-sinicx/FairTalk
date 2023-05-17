@@ -13,7 +13,7 @@ The script that downloads video files from youtube is under preparation.
 
 ## 2. Apply active speaker detection (ASD) to video files  
 We use [TalkNet](https://github.com/TaoRuijie/TalkNet-ASD/) to do ASD. Please refer to the link for the detail.  
-The files have been included in this repository. You can setup TalkNet-ASD by
+You can download TalkNet from the above link, and put it into ./TalkNet-ASD, then setup it by
 ````
 % cd TalkNet-ASD
 % pip install -r requirement.txt
