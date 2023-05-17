@@ -17,8 +17,9 @@ You can download TalkNet from the above link, and put it into ./TalkNet-ASD, the
 ````
 % cd TalkNet-ASD
 % pip install -r requirement.txt
-## Note that the above .txt does not include pandas which is needed. 
-## You may manually install pandas.
+## Note that the above .txt does not include pandas which is needed. You may manually install pandas.
+## Also make sure that the pytorch version installed in this step is compatible with your CUDA version. 
+## You may want to manually install a specific version torch.  
 ````
 Then run ./scripts/apply_asd.sh
 
