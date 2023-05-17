@@ -17,11 +17,15 @@ You can download TalkNet from the above link, and put it into ./TalkNet-ASD, the
 ````
 % cd TalkNet-ASD
 % pip install -r requirement.txt
-## Note that the above .txt does not include pandas which is needed. You may manually install pandas.
-## Also make sure that the pytorch version installed in this step is compatible with your CUDA version. 
-## You may want to manually install a specific version torch that is compatible with your CUDA.  
 ````
 Then run ./scripts/apply_asd.sh
+Something to note
+````
+## Note that ./TalkNet-ASD/requirement.txt does not include pandas which is needed. You may manually install pandas.
+## Also, ./TalkNet-ASD/requirement.txt does not ensure a pytorch version that is compatibale with your CUDA, So you may want to manually install pytorch.
+## If you are using windows, modify Line 217 of ./TalkNet-ASD/demoTalkNet.py to avoid an error due to path separator:
+## Line 217: fileName, _ = os.path.splitext(os.path.basename(file))
+````
 
 ## 3. Apply OpenFace to video files
 We use [OpenFace](https://github.com/TadasBaltrusaitis/OpenFace) to extract features from videos. Please refer to the link for the detail.  
