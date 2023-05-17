@@ -23,7 +23,7 @@ Then run ./scripts/apply_asd.sh
 Something to note
 ````
 ## ./TalkNet-ASD/requirement.txt does not include pandas which is needed. You may manually install pandas.
-## ./TalkNet-ASD/requirement.txt does not ensure a pytorch version that is compatibale with your CUDA. You may manually install pytorch.
+## ./TalkNet-ASD/requirement.txt does not ensure a pytorch version compatibale with your CUDA. You may manually install pytorch.
 ## If you are using windows, modify Line 217 of ./TalkNet-ASD/demoTalkNet.py to avoid an error due to path separator:
 ## Line 217: fileName, _ = os.path.splitext(os.path.basename(file))
 ````
