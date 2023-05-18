@@ -8,7 +8,11 @@ The repository assumes `python>=3.7.9`. We strongly recommend to use virtual env
 
 # How to run
 ## 1. Download video files  
-Run ./scripts/download_videos.sh to download video files from [vimeo](https://vimeo.com/).  
+To download video files from [vimeo](https://vimeo.com/), run
+````
+bash ./scripts/download_videos.sh   # for linux
+python ./scripts/download_videos.py # for windows
+````
 The script that downloads video files from youtube is under preparation.
 
 ## 2. Apply active speaker detection (ASD) to video files  
@@ -18,8 +22,11 @@ You can download TalkNet from the above link, and put it into ./TalkNet-ASD, the
 % cd TalkNet-ASD
 % pip install -r requirement.txt
 ````
-Then run ./scripts/apply_asd.sh
-
+Then run
+````
+bash ./scripts/apply_asd.sh   # for linux
+python ./scripts/apply_asd.py # for windows
+````
 Something to note
 ````
 ## ./TalkNet-ASD/requirement.txt does not include pandas which is needed. You may manually install pandas.
