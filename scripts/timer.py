@@ -1,3 +1,4 @@
+# https://qiita.com/mm_sys/items/3adf87d1a267c56e259c
 import time
 
 class Timer(object):
