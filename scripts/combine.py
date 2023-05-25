@@ -5,6 +5,7 @@ import numpy as np
 import argparse
 from scipy.optimize import linear_sum_assignment
 import joblib
+from timer import Timer
 
 parser = argparse.ArgumentParser(description='combine outputs by TalkNet-ASD and OpenFace into scene-wise files')
 
@@ -124,13 +125,58 @@ class BBMatcher():
         return np.min(self.openface_data.iloc[:,x1:x2+1],axis=1), np.max(self.openface_data.iloc[:,x1:x2+1],axis=1),  \
                 np.min(self.openface_data.iloc[:,y1:y2+1],axis=1), np.max(self.openface_data.iloc[:,y1:y2+1],axis=1)
 
+    def _match_inner_inner(self, i:int, idx:int, col_ind, df_asd, row_ind, df_face, asd_dummy, face_dummy):
+            if idx < len(col_ind) and col_ind[idx] < len(df_asd):
+                left = list(df_asd.iloc[col_ind[idx]])
+            else:
+                left = asd_dummy
+            if idx < len(row_ind) and row_ind[idx] < len(df_face):
+                right = list(df_face.iloc[row_ind[idx]])
+            else:
+                right = face_dummy
+            return left + right[1:]
+        
+    def _match_inner(self, i:int):
+        df_face = self.openface_data.loc[self.openface_data['frame']==i]
+        df_asd = self.asd_data.loc[self.asd_data['frame']==i]
+        if df_face.empty or df_asd.empty:
+            return None
+        
+        asd_dummy = [np.NaN]*len(self.asd_data.columns)
+        face_dummy = [np.NaN]*len(self.openface_data.columns)
+        
+        IOU = np.empty((len(df_face)*2,len(df_asd)*2)); IOU.fill(self.threshold)
+        bboxA = df_face[['xmin', 'ymin', 'xmax', 'ymax']]
+        bboxB = df_asd[['bbox_xmin', 'bbox_ymin', 'bbox_xmax', 'bbox_ymax']]
+        
+        IOU[:len(df_face), :len(df_asd)] = [[self.calc_iou(list(bboxA.iloc[j]), list(bboxB.iloc[k])) for k in range(len(df_asd))] for j in range(len(df_face))]
+        row_ind, col_ind = linear_sum_assignment(-IOU)
+        # combine df_face and df_asd by row_ind, col_ind
+        asd_dummy[0]=i
+        face_dummy[0]=i
+        return [self._match_inner_inner(i,j, col_ind, df_asd, row_ind, df_face, asd_dummy, face_dummy) for j in range(max(len(df_asd),len(df_face)))]
+    
+    @staticmethod
+    def flatten(matrix):
+        return [x for row in matrix for x in row]
 
     def match(self):
+        maxframe = max(self.openface_data["frame"].max(),self.asd_data["frame"].max())
+        #print(maxframe)
+        result = joblib.Parallel(n_jobs=-1)(joblib.delayed(self._match_inner)(i) for i in range(maxframe+1))
+        result = filter(lambda x: x!=None, result)
+        result = self.flatten(result)
+        #print(len(result), len(result[0]))
+
+        return result
+    
+    def match_slow(self):
         maxframe = max(self.openface_data["frame"].max(),self.asd_data["frame"].max())
         temp=[]
         asd_dummy = [np.NaN]*len(self.asd_data.columns)
         face_dummy = [np.NaN]*len(self.openface_data.columns)
 
+        #print(maxframe)
         for i in range(maxframe+1):
             df_face = self.openface_data.loc[self.openface_data['frame']==i]
             df_asd = self.asd_data.loc[self.asd_data['frame']==i]
@@ -156,23 +202,41 @@ class BBMatcher():
                         right = face_dummy
                     temp.append(left + right[1:])            
                     idx+=1
+        #print(len(temp), len(temp[0]))
         return temp
 
     
 def main(args):
+    t = Timer()
     asd_data = ASDData(args.asd_dir).get()    
+    t.check("asd_data get")
     args.openface_dir = Path(args.openface_dir)
     openface_data = pd.read_csv(args.openface_dir/(args.openface_dir.name+".csv"))
+    t.check("openface_data get")
 
     bb_matcher = BBMatcher(asd_data, openface_data)
+    t.check("bb_matcher construction get")
     match = bb_matcher.match()
+    t.check("match get")
+    match_check = bb_matcher.match_slow()
+    t.check("match_slow? get")
+    
+    #for i in range(len(match)):
+    #    for j in range(len(match[0])):
+    #        if match[i][j]!=match_check[i][j]:
+    #            print("error at ({},{}): {} != {}".format(i,j,match[i][j], match_check[i][j]))                      
+                      
+    # assert(match==match_check) this assertion does not work since nan==nan always false.
     
     # output
     args.output_dir = Path(args.output_dir)
     
     columns = list(asd_data.columns)+list(openface_data.columns)[1:]
+    t.check("concat columns")
     out = pd.DataFrame(match, columns =columns)    
+    t.check("convert to pandas data frame")
     out.to_csv(args.output_dir/"openface_asd_pairs.csv", index=False)
+    t.check("save")
     
 if __name__ == '__main__':
     main(parser.parse_args())
