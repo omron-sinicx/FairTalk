@@ -34,21 +34,27 @@ Something to note
 ## If you are using windows, modify Line 217 of ./TalkNet-ASD/demoTalkNet.py to avoid an error due to path separator:
 ## Line 217: fileName, _ = os.path.splitext(os.path.basename(file))
 ````
+The output should be 4 folders, where only /pywork is used afterwawrds (in step 4).
 
 ## 3. Apply OpenFace to video files
 We use [OpenFace](https://github.com/TadasBaltrusaitis/OpenFace) to extract features from videos. Please refer to the link for the detail.  
 ### (Need to add how to setup OpenFace here)
-Then run ./scripts/apply_openface.sh
+Then run ./scripts/apply_openface.sh  
+The output should be [filenmae].csv, which is used in step 4.
 
-## 4. Convert the result .csv into 25fps (or 30fps) 
+## 4. combine ASD and OpenFace
+run ./scripts/combine.sh  
+This batch file will call ./script/combine.py to combine ASD result and OpenFace result.
+
+## 5. Convert the result .csv into 25fps (or 30fps) 
 It is necessary to make sure that the above outputs from different videos have the same fps for the subsequent processing.  
 25fps or 30fps is desirable.  
 The script for conversion is under preparation.
 
-## 5. Preprocessing, and combine ASD and OpenFace
+## 6. Preprocessing
 Run ./code/ASD2csv_new.ipynb  
 We will prepare a .py version later.
 
-## 6. Train the model
+## 7. Train the model
 Run ./code/LSTM_server_curri.ipynb  
 We will prepare a .py version later.
