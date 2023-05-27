@@ -9,11 +9,31 @@ echo "after: int num_faces_max = 25;"
 
 
 echo "You can also download the results from http://TBA ."
-read -p "Have you surely modify the source code before build OpenFace? (y/N): " yn; case "$yn" in [yY]*) echo hello;; *) echo "abort";; esac
+read -p "Did you surely modify the source code before build OpenFace? (y/N): " yn; case "$yn" in [yY]*) echo hello;; *) echo "abort";; esac
 
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 SRC_DIR="$SCRIPT_DIR/../data"
 OPENFACE_EXE="$OPENFACE_BIN_DIR/FaceLandmarkVidMulti"
+
+#openface_dir=$SRC_DIR/openface_features/train/
+openface_dir=/mnt/ssd2/remote-meeting-dataset/openface_features/train/
+
+for video in $(ls -1 $SRC_DIR/train/* | grep youtube); do
+    dir=$(dirname $video)
+    ext=".${video##*.}"
+    ddir=$(dirname $dir)
+    base=$(basename $video "$ext")
+    echo $dir $base $ext
+    completion_check=${openface_dir}/${base}/.completed
+    if [ -e $completion_check ]; then
+        echo "skip (already completed)"
+    else
+        mkdir -p $openface_dir/$base/
+        $OPENFACE_EXE -f $video -out_dir $openface_dir/$base/ && touch $completion_check
+    fi 
+done
+exit
+
 
 subsets=("train" "val" "test")
 
