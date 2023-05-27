@@ -8,7 +8,7 @@ fi
 
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 SRC_DIR="$SCRIPT_DIR/../data"
-PYTHON_SCRIPT="$SCRIPT_DIR/../preprocessing/combine.py"
+PYTHON_SCRIPT="$SCRIPT_DIR/combine.py"
 subsets=("train" "val" "test")
 
 # parallelize for loop in a smart way!
