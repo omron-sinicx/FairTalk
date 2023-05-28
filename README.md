@@ -52,9 +52,8 @@ It is necessary to make sure that the above outputs from different videos have t
 The script for conversion is under preparation.
 
 ## 6. Preprocessing
-Run ./code/ASD2csv_new.ipynb  
-We will prepare a .py version later.
+Run ./code/preprocessing.ipynb  
+We may prepare a .py version later.
 
 ## 7. Train the model
-Run ./code/LSTM_server_curri.ipynb  
-We will prepare a .py version later.
+Under prepreation.
