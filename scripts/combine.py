@@ -125,7 +125,8 @@ class BBMatcher():
         return np.min(self.openface_data.iloc[:,x1:x2+1],axis=1), np.max(self.openface_data.iloc[:,x1:x2+1],axis=1),  \
                 np.min(self.openface_data.iloc[:,y1:y2+1],axis=1), np.max(self.openface_data.iloc[:,y1:y2+1],axis=1)
 
-    def _match_inner_inner(self, i:int, idx:int, col_ind, df_asd, row_ind, df_face, asd_dummy, face_dummy):
+    @staticmethod
+    def _match_inner_inner(i:int, idx:int, col_ind, df_asd, row_ind, df_face, asd_dummy, face_dummy):
             if idx < len(col_ind) and col_ind[idx] < len(df_asd):
                 left = list(df_asd.iloc[col_ind[idx]])
             else:
@@ -136,25 +137,21 @@ class BBMatcher():
                 right = face_dummy
             return left + right[1:]
         
-    def _match_inner(self, i:int):
-        df_face = self.openface_data.loc[self.openface_data['frame']==i]
-        df_asd = self.asd_data.loc[self.asd_data['frame']==i]
+    @staticmethod
+    def _match_inner(i, df_face, df_asd, asd_dummy, face_dummy, threshold):
         if df_face.empty or df_asd.empty:
             return None
-        
-        asd_dummy = [np.NaN]*len(self.asd_data.columns)
-        face_dummy = [np.NaN]*len(self.openface_data.columns)
-        
-        IOU = np.empty((len(df_face)*2,len(df_asd)*2)); IOU.fill(self.threshold)
+        IOU = np.empty((len(df_face)*2,len(df_asd)*2));
+        IOU.fill(threshold)
         bboxA = df_face[['xmin', 'ymin', 'xmax', 'ymax']]
         bboxB = df_asd[['bbox_xmin', 'bbox_ymin', 'bbox_xmax', 'bbox_ymax']]
         
-        IOU[:len(df_face), :len(df_asd)] = [[self.calc_iou(list(bboxA.iloc[j]), list(bboxB.iloc[k])) for k in range(len(df_asd))] for j in range(len(df_face))]
+        IOU[:len(df_face), :len(df_asd)] = [[BBMatcher.calc_iou(list(bboxA.iloc[j]), list(bboxB.iloc[k])) for k in range(len(df_asd))] for j in range(len(df_face))]
         row_ind, col_ind = linear_sum_assignment(-IOU)
         # combine df_face and df_asd by row_ind, col_ind
         asd_dummy[0]=i
         face_dummy[0]=i
-        return [self._match_inner_inner(i,j, col_ind, df_asd, row_ind, df_face, asd_dummy, face_dummy) for j in range(max(len(df_asd),len(df_face)))]
+        return [BBMatcher._match_inner_inner(i,j, col_ind, df_asd, row_ind, df_face, asd_dummy, face_dummy) for j in range(max(len(df_asd),len(df_face)))]
     
     @staticmethod
     def flatten(matrix):
@@ -162,8 +159,18 @@ class BBMatcher():
 
     def match(self):
         maxframe = max(self.openface_data["frame"].max(),self.asd_data["frame"].max())
+        asd_dummy = [np.NaN]*len(self.asd_data.columns)
+        face_dummy = [np.NaN]*len(self.openface_data.columns)
+        
         #print(maxframe)
-        result = joblib.Parallel(n_jobs=-1)(joblib.delayed(self._match_inner)(i) for i in range(maxframe+1))
+        result = joblib.Parallel(n_jobs=-1)(joblib.delayed(self._match_inner)(
+            i,
+            self.openface_data.loc[self.openface_data['frame']==i],
+            self.asd_data.loc[self.asd_data['frame']==i],
+            asd_dummy,
+            face_dummy,
+            self.threshold
+        ) for i in range(maxframe+1))
         result = filter(lambda x: x!=None, result)
         result = self.flatten(result)
         #print(len(result), len(result[0]))
@@ -221,10 +228,10 @@ def main(args):
     match_check = bb_matcher.match_slow()
     t.check("match_slow? get")
     
-    #for i in range(len(match)):
-    #    for j in range(len(match[0])):
-    #        if match[i][j]!=match_check[i][j]:
-    #            print("error at ({},{}): {} != {}".format(i,j,match[i][j], match_check[i][j]))                      
+    for i in range(len(match)):
+        for j in range(len(match[0])):
+            if match[i][j]!=match_check[i][j]:
+                print("error at ({},{}): {} != {}".format(i,j,match[i][j], match_check[i][j]))                      
                       
     # assert(match==match_check) this assertion does not work since nan==nan always false.
     
