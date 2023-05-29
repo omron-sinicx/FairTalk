@@ -8,11 +8,11 @@ import subprocess
 # if len(sys.argv) > 1:
 #     cpu_num = int(sys.argv[1])
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 SRC_DIR = os.path.join(SCRIPT_DIR, "..", "data")
 PYTHON_SCRIPT = os.path.join(SCRIPT_DIR, "combine.py")
 subsets = ["train", "val", "test"]
-
+print(os.path.normpath(SCRIPT_DIR))
 
 # def open_sem(tokens):
 #     subprocess.run(["mkfifo", "pipe-$$"])
@@ -51,6 +51,7 @@ for subset in subsets:
             print(f"skip (already completed) {base}")
         else:
             command = f"python {PYTHON_SCRIPT} -f {openface_dir}/{base} -a {directory}/{base} -o {directory}/{base}"
-            subprocess.run(command)
-            command = f"echo. > {completion_check}"
-            subprocess.run(command)
+            subprocess.run(command, check=True)
+            with open(completion_check, 'w') as file:
+                pass
+
