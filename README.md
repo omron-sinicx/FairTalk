@@ -50,9 +50,9 @@ python ./scripts/combine_openface_asd.py # for windows
 ````
 This batch file will call ./script/combine.py to combine ASD result and OpenFace result.
 
-## 5. Convert the result .csv into 25fps (or 30fps) 
+## 5. Convert the result .csv into 25fps ~ 30fps 
 It is necessary to make sure that the above outputs from different videos have the same fps for the subsequent processing.  
-25fps or 30fps is desirable.  
+25fps ~ 30fps is desirable.  
 The script for conversion is under preparation.
 
 ## 6. Preprocessing
