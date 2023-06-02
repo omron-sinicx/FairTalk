@@ -60,4 +60,5 @@ Run ./code/preprocessing.ipynb
 We may prepare a .py version later.
 
 ## 7. Train the model
-Under prepreation.
+Run ./code/LSTM_server_curri.ipynb  
+We may prepare a .py version later.
