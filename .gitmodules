@@ -1,3 +1,6 @@
-[submodule "TalkNet-ASD"]
-	path = TalkNet-ASD
+[submodule "model_training/TalkNet-ASD"]
+	path = model_training/TalkNet-ASD
 	url = https://github.com/TaoRuijie/TalkNet-ASD.git
+[submodule "OpenFace"]
+	path = OpenFace
+	url = git@github.com:TadasBaltrusaitis/OpenFace.git
