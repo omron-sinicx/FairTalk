@@ -50,7 +50,7 @@ pip install -r requirements.txt
 
 ### Video Download
 
-To download video files from Vimeo, navigate to `model_training/scripts` and execute the following command for Linux or Windows:
+To download video files from Vimeo and YouTube, navigate to `model_training/scripts` and execute the following command for Linux or Windows:
 
 Linux:
 ```bash
@@ -61,8 +61,6 @@ Windows:
 ```bash
 python download_videos.py
 ```
-
-The script for downloading from YouTube is under preparation.
 
 ### Active Speaker Detection (ASD)
 
