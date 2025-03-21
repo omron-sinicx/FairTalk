@@ -1,4 +1,4 @@
-# remote-meeting-dataset
+# FairTalk
 
 # Dependencies
 The repository assumes `python>=3.7.9`. We strongly recommend to use virtual env or docker to virtualize the environment.
