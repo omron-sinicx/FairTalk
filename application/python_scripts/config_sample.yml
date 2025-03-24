@@ -1,0 +1,78 @@
+virtual_camera:
+
+  # 使用可能なカメラ番号は `$ python list_available_cameras.py` で取得可能
+  camera_num: -1
+
+  # 仮想カメラを何 FPS で配信したいかを指定
+  fps: 30
+
+  # デフォルトの倍率（画角）
+  default_magnification: 1.0
+
+
+effect:
+
+  # pickle した pandas.dataframe へのパスを指定。
+  path_to_df:
+    - './leaning_forward_effects/effect_01.pkl'
+    # - './leaning_forward_effects/effect_02.pkl'
+    # - './leaning_forward_effects/effect_03.pkl'
+    # - './leaning_forward_effects/effect_04.pkl'
+    # - './leaning_forward_effects/effect_05.pkl'
+    # - './leaning_forward_effects/effect_06.pkl'
+    # - './leaning_forward_effects/effect_07.pkl'
+    # - './leaning_forward_effects/effect_08.pkl'
+    # - './leaning_forward_effects/effect_09.pkl'
+    # - './leaning_forward_effects/effect_10.pkl'
+
+  # エフェクトの見た目をデバッグする用。true にするとエフェクトが何度もループし続ける。
+  enable_effect_loop: false
+
+  # これを true にすると拡大エフェクトは無効になる。事前に録画したうなづき動画を挿入するようになる。
+  enable_nodding_effect: false
+
+  # うなづき動画へのパス。enable_nodding_effect が false の時は無視される。
+  path_to_nodding_video: 'PATH/TO/VIDEO/FILE'
+
+  # 拡大エフェクトの長さを秒数で指定。
+  effect_duration: 5
+
+  # 拡大エフェクトの終わり方：拡大する時の逆再生。これを true にすると zoom_out_duration は無効。
+  reversed_end_effect: true
+
+  # 拡大エフェクトが終わった後に、元の倍率に戻るまでの時間を秒数で指定。 reversed_end_effect が true のときは無効。
+  zoom_out_duration: 5
+
+  # 枠をつけるエフェクト
+  enable_frame_effect: false
+
+  # 枠をつけるエフェクトの太さ（ピクセル単位で指定）
+  frame_effect_thickness: 100
+
+  # 枠をつけるエフェクトの持続時間（秒数で指定）
+  frame_effect_duration: 5
+
+model:
+
+  # onnx モデルへのパスを指定。
+  path_to_onnx_model: "prediction_model/model_01.onnx"
+
+  # 発話意図検出の閾値。モデルからの出力がこの値以上の時に、エフェクトを加える。
+  threshold: 0
+
+  # onnx モデルに、過去何フレーム分の AU を入力するのかを指定。この値はモデルによって決定する。
+  lstm_memory_length: 25
+
+audio:
+  audio_threshold: 30
+
+socket_connection:
+
+  # IP アドレスとポートを指定。OpenFace の FeatureExtraction 内と合わせる。
+  IP: "127.0.0.1"
+  port: 1234
+
+debug_tools:
+
+  # コンソールで、発話意図の大きさを可視化する。
+  console_visualization: true

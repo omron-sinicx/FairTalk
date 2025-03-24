@@ -10,7 +10,7 @@ dest_dir = os.path.join(script_dir, '..', 'data')
 
 # Iterate over the "train", "val", and "test" subsets
 for subset in ["train", "val", "test"]:
-    dat = os.path.join(config_dir, f'video_list_{subset}.dat')
+    dat = os.path.join(config_dir, f'vimeo_list_{subset}.dat')
 
     print(f'download {dat}')
 
@@ -22,4 +22,19 @@ for subset in ["train", "val", "test"]:
     ]
 
     # Run the command
+    subprocess.run(cmd, check=True)
+
+# Download YouTube videos for training
+youtube_dat = os.path.join(config_dir, 'youtube_list_train.dat')
+
+if os.path.exists(youtube_dat):
+    print(f'download {youtube_dat}')
+    
+    cmd = [
+        'yt-dlp',
+        '--batch-file', youtube_dat,
+        '--output', os.path.join(dest_dir, 'train/train_youtube_%(display_id)s.%(ext)s'),
+        '--format', 'bestvideo+bestaudio/best'
+    ]
+    
     subprocess.run(cmd, check=True)
