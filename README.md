@@ -31,7 +31,7 @@ FairTalk is a system that aims to enhance the balance of speaking opportunities 
 To get started, first clone the repository with all its submodules. Open a terminal and run:
 
 ```bash
-git clone --recursive git@github.com:omron-sinicx/remote-meeting-dataset.git
+git clone --recursive git@github.com:omron-sinicx/FairTalk.git
 cd FairTalk
 ```
 
