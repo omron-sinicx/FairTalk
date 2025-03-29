@@ -1,0 +1,97 @@
+theme: default # default || classic || dark
+organization: Pixel Genius Labs
+twitter: '@denkivvakame'
+title: FairTalk - Facilitating Balanced Participation in Video Conferencing by Implicit Visualization of Predicted Turn-Grabbing Intention
+# journal: "AAAA'24"
+resources:
+  paper: # https://openreview.net/
+  arxiv: https://arxiv.org
+  code: https://github.com/omron-sinicx/FairTalk
+  video: https://www.youtube.com/embed/PBfJhu5mGz4?si=NHw3MN8GHlGAGOOD
+  # demo: https://colab.research.google.com/
+  huggingface: https://huggingface.co/datasets/omron-sinicx/video-conferencing-facial-analysis
+description: academic projectpage template that supports markdown and KaTeX
+
+image: FairTalk_teaser.png
+url: https://denkiwakame.github.io/academic-project-template
+speakerdeck: # speakerdeck slide ID
+authors:
+  - name: Ryo Iijima*
+    affiliation: [1]
+    url: https://bokuiijima.com/
+    position: intern
+  - name: Shigeo Yoshida
+    affiliation: [1]
+    position: Researcher
+    # url: https://thispersondoesnotexist.com/
+  - name: Atsushi Hashimoto
+    affiliation: [1]
+    position: Researcher
+    # url: https://thispersondoesnotexist.com/
+  - name: Jiaxin Ma
+    affiliation: [1]
+    position: Researcher
+    # url: https://thispersondoesnotexist.com/
+affiliations:
+  - OMRON SINIC X Corporation
+meta:
+  - '*work done while he was interning at OMRON SINIC X.'
+bibtex: >
+  @misc{FairTalk,
+    author    = {Iijima, Ryo and Yoshida, Shigeo and Hashimoto, Atsushi and Ma, Jiaxin},
+    title     = {FairTalk: Facilitating Balanced Participation in Video Conferencing by Implicit Visualization of Predicted Turn-Grabbing Intention},
+    year      = {2025},
+    eprint={0000.0000},
+    keywords  = {Computer Mediated Communication, Machine Learning, Turn-grabbing, Willingness prediction},
+    url       = {https://arxiv.org/abs/0000.0000},
+  }
+
+teaser: FairTalk_teaser.png
+abstract: |
+  Creating fair opportunities for all participants to contribute is a notable challenge in video conferencing.
+  This paper introduces **FairTalk**, a system that facilitates the subconscious redistribution of speaking opportunities.
+  FairTalk predicts participants' turn-grabbing intentions using a machine learning model trained on web-collected videoconference data with positive-unlabeled learning, where turn-taking detection provides automatic positive labels. To subtly balance speaking turns, the system visualizes predicted intentions by mimicking natural human behaviors associated with the desire to speak. A user study demonstrates that FairTalk improves objective measures of speaking balance, though subjective feedback shows no significant perceived impact. We also discuss design implications derived from participant interviews.
+
+body:
+  - title: Predict Turn-Grabbing Intention
+    text: |
+      We developed a classifier to identify turn-grabbing intentions in video conferences, adopting **positive-unlabeled (PU) learning**. This method uses a small set of labeled positive samples while treating rest of the data as unlabeled, potentially containing both positive and negative instances.
+
+      In video conferencing, turn-grabbing intentions are inferred from participant behavior. When a participant becomes a new speaker, they likely have a turn-grabbing intention just before the previous speaker's utterance ends. We extract positive samples from video clips preceding these events while treating all other data as unlabeled.
+
+      ## Data Collection
+      We gathered 121 video recordings from YouTube and Vimeo, focusing on conversations involving 3 to 9 participants, predominantly in gallery view, and primarily in English. This dataset includes 112 recordings (135.8 hours) for training, 3 recordings (2.8 hours) for validation, and 6 recordings (4.2 hours) for testing.
+
+      ## Sample Extraction
+      To detect turn-taking events, we applied [Active Speaker Detection (ASD)](https://github.com/TaoRuijie/TalkNet-ASD) alongside [OpenFace](https://github.com/TadasBaltrusaitis/OpenFace) for facial feature extraction. A smoothing operation was applied to mitigate ASD glitches. A four-second interval, starting up to 10 seconds before speech onset, was randomly sampled as input data.
+
+      ## Model Training
+      We selected 19 features from OpenFace, focusing on 17 Facial Action Units and 2 Gaze directions, excluding other features to reduce overfitting observed in preliminary tests. Our lightweight network architecture consists of two 1D convolutional layers followed by an LSTM and a final fully connected layer for binary classification.
+
+      <div class="uk-height-medium uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-light" data-src="network_architecture.jpg" uk-img>
+      </div>
+
+      Using the model mentioned above, we achieved a Matthews Correlation Coefficient (MCC) of 0.175, an Area Under the Curve (AUC) of 0.602, an F-score of 0.392, an accuracy of 0.648, a precision of 0.315, and a recall of 0.519 on the test set.
+
+  - title: Implicitly Visualize the Intention
+    text: |
+      Our system simulates the natural leaning-forward behavior to signal a desire to speak. When our predictive model detects this intention, the system manipulate the video to mimic a lean-forward motion. This helps balance conversations subtly and effortlessly.
+
+      <video
+        src="comparison_video_v01.mp4"
+        width=""
+        height=""
+        muted
+        autoplay
+        loop
+        preload="auto">
+      </video>
+
+      FairTalk analyzes webcam video using OpenFace to extract facial expressions and gaze. It feeds this data into a machine learning model to predict turn-grabbing intention. Upon detecting an intention, FairTalk applies visual effects to the video with OBS. Predictions pause if the system detects ongoing speech.
+
+      <div class="uk-height-medium uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-light" data-src="system_flow.png" uk-img>
+      </div>
+
+  - title: License
+    text: |
+      This work is licensed under a CC BY-NC-SA: Creative Commons Attribution-Noncommercial-ShareAlike License.
